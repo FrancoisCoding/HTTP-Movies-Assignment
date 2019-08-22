@@ -5,20 +5,34 @@ import axios from "axios";
 
 const MovieUpdate = props => {
   const [update, setUpdate] = useState({
+    id: props.match.params.id,
     title: "",
     director: "",
-    metascore: "",
-    stars: ""
+    metascore: ""
   });
+  const [stars, setStars] = useState([]);
   const changeHandler = event => {
     event.preventDefault();
     setUpdate({ ...update, [event.target.name]: event.target.value });
   };
 
+  const changeHandler2 = event => {
+    event.preventDefault();
+    setStars({ ...stars, [event.target.name]: [event.target.value] });
+  };
+
+  const data = {
+    ...update,
+    ...stars
+  };
+
   const updateMovie = e => {
     e.preventDefault();
+    console.log("update", update);
+    console.log("stars", stars);
+    console.log("data", data);
     axios
-      .post(`http://localhost:5000/api/movies/${props.match.params.id}`, update)
+      .put(`http://localhost:5000/api/movies/${props.match.params.id}`, data)
       .catch(err => console.log(err.response));
     props.history.push(`/`);
   };
@@ -45,7 +59,7 @@ const MovieUpdate = props => {
             Director:
             <input
               className="input-modal"
-              type="director"
+              type="text"
               name="director"
               onChange={changeHandler}
               value={update.director}
@@ -58,7 +72,7 @@ const MovieUpdate = props => {
             Metascore:
             <input
               className="input-modal"
-              type="metascore"
+              type="text"
               name="metascore"
               onChange={changeHandler}
               value={update.metascore}
@@ -71,10 +85,9 @@ const MovieUpdate = props => {
             Stars:
             <input
               className="input-modal"
-              type="stars"
+              type="text"
               name="stars"
-              onChange={changeHandler}
-              value={update.stars}
+              onChange={changeHandler2}
             />
           </label>
         </p>
